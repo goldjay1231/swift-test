@@ -57,6 +57,7 @@ cmd apt-get -y --force-yes install $PKG_GIT $PKG_PYHON $PKG_DEP_SWIFT
 
 # = Init =
 rm -fr $SWIFT_HOME
+pkill -9 -f "swift" || true
 
 # = Main =
 wr 'Install dep pkgs'
@@ -85,11 +86,13 @@ wr 'Build Swift All in One'
 cd $WORK_HOME
 cmd ./saio_build.sh ${WORK_HOME}/$SWIFT_HOME/
 
-we 'Run Swift Service'
+wr 'Run Swift Service'
 cmd ${WORK_HOME}/$SWIFT_HOME/VENV/bin/swift-init main stop || true
 cmd ${WORK_HOME}/$SWIFT_HOME/VENV/bin/swift-init main start || true
+cmd ${WORK_HOME}/$SWIFT_HOME/VENV/bin/swift-init main status
 
 wr 'Run Functional Test'
-cmd .functests
+cd ${WORK_HOME}/$SWIFT_HOME/
+cmd ./.functests
 
 #wr 'Run Probe Test'
